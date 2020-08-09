@@ -15,6 +15,10 @@ public class Ball : MonoBehaviour
 
     Vector2 paddleToBall;
     Vector2 paddlePosition;
+
+    Gradient trailColor;
+    GradientColorKey[] colorKey;
+    GradientAlphaKey[] alphaKeys;
     
     Rigidbody2D ballRigid;
     GameStatus gameStatus;
@@ -33,6 +37,16 @@ public class Ball : MonoBehaviour
         ballCollision = ballSounds[Random.Range(0,ballSounds.Length)];
 
         velocity = new Vector2(Random.Range(-5f,5f),15f);
+
+        trailColor = new Gradient();
+        colorKey = new GradientColorKey[1];
+        colorKey[0].color = Color.white;
+        colorKey[0].time = 0.0f;
+        alphaKeys = new GradientAlphaKey[2];
+        alphaKeys[0].alpha = 1.0f;
+        alphaKeys[0].time = 0.0f;
+        alphaKeys[1].alpha = 0.0f;
+        alphaKeys[1].time = 1.0f;
     }
 
     void Update(){
@@ -40,6 +54,34 @@ public class Ball : MonoBehaviour
             LockBallToPaddle();
             LaunchBall();
         }
+
+        if(hasVelocity){
+            if(gameStatus.GetMultiplier() > 0){
+                GetComponent<TrailRenderer>().time = 0.2f + gameStatus.GetMultiplier() * 0.05f;
+
+                switch(gameStatus.GetMultiplier()){
+                    case 1:
+                        colorKey[0].color = new Color(1f,0.8353392f,0f,1f);
+                        break;
+                    case 2:
+                        colorKey[0].color = new Color(1f,0.7282301f,0f,1f);
+                        break;
+                    case 3:
+                        colorKey[0].color = new Color(1f,0.6082861f,0f,1f);
+                        break;
+                    default:
+                        colorKey[0].color = new Color(1f,0.3112785f,0f,1f);
+                        break;
+                }
+
+            } else {
+                GetComponent<TrailRenderer>().time = 0.2f;
+                colorKey[0].color = new Color(1f,1f,1f,1f);
+            }
+        }
+
+        trailColor.SetKeys(colorKey, alphaKeys);
+        GetComponent<TrailRenderer>().colorGradient = trailColor;
 
         if(ballRigid.velocity.y > 0 && ballRigid.velocity.y < 3){
             ballRigid.gravityScale = -0.2f;
@@ -81,7 +123,10 @@ public class Ball : MonoBehaviour
         if(Input.GetMouseButtonDown(0)){
             hasVelocity = true;
             GetComponent<Rigidbody2D>().velocity = velocity;
+            GetComponent<TrailRenderer>().time = 0.2f;
         }
+
+        
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {

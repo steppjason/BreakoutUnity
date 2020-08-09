@@ -60,4 +60,8 @@ public class GameStatus : MonoBehaviour
         scoreMultipler.text = "";
         scoreMultiplerFX.Stop();
     }
+
+    public int GetMultiplier(){
+        return multiplier;
+    }
 }
