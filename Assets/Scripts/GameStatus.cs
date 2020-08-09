@@ -12,7 +12,7 @@ public class GameStatus : MonoBehaviour
     [SerializeField] ParticleSystem scoreMultiplerFX;
 
     [SerializeField] int currentScore = 0;
-    [SerializeField] int multiplier = -1;
+    [SerializeField] int multiplier = 0;
 
     void Awake()
     {
@@ -49,14 +49,14 @@ public class GameStatus : MonoBehaviour
 
     public void AddMultipler(){
         multiplier++;
-        if(multiplier > 0){
+        if(multiplier > 1){
             scoreMultipler.text = "x" + multiplier.ToString();
             scoreMultiplerFX.Play();
         }
     }
 
     public void ResetMultipler(){
-        multiplier = -1;
+        multiplier = 0;
         scoreMultipler.text = "";
         scoreMultiplerFX.Stop();
     }
